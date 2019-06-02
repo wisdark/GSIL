@@ -25,7 +25,7 @@ from .log import logger
 
 regex_mail = r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
 regex_host = r"@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
-regex_pass = r"(pass|password)"
+regex_pass = r"(pass|password|pwd)"
 regex_title = r"<title>(.*)<\/title>"
 regex_ip = r"^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$"
 
@@ -135,6 +135,13 @@ class Engine(object):
             self.next_count += 1
 
         return True
+
+    def verify(self):
+        try:
+            ret = self.g.rate_limiting
+            return True, 'TOKEN-PASSED: {r}'.format(r=ret)
+        except GithubException as e:
+            return False, 'TOKEN-FAILED: {r}'.format(r=e)
 
     def search(self, rule_object):
         """
@@ -257,9 +264,7 @@ class Engine(object):
                             i_idx = idx + i
                             if i_idx in idxs:
                                 continue
-                            if i_idx > codes_len:
-                                continue
-                            if i_idx not in codes:
+                            if i_idx >= codes_len:
                                 continue
                             if codes[i_idx].strip() == '':
                                 continue
@@ -272,7 +277,7 @@ class Engine(object):
             return self.code.splitlines()[0:20]
 
     def _keywords(self):
-        if ' ' in self.rule_object.keyword:
+        if '"' not in self.rule_object.keyword and ' ' in self.rule_object.keyword:
             return self.rule_object.keyword.split(' ')
         else:
             if '"' in self.rule_object.keyword:

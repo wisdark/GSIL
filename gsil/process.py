@@ -55,6 +55,7 @@ class Process(object):
             title = '〔GSIL〕'
         subject = '{title}[{types}] [{rule_name}] {count}'.format(title=title, types=self.rule_object.types, rule_name=self.rule_object.corp, count=len(self.content))
         to = get('mail', 'to')
+        cc = get('mail', 'cc')
         html = '<h3>Rule: {rule_regex} Count: {count} Datetime: {datetime}</h3>'.format(rule_regex=self.rule_object.keyword, datetime=time.strftime("%Y-%m-%d %H:%M:%S"), count=len(self.content))
         for i, v in self.content.items():
             html += '<h3>({i})<a href="{url}">{hash}</a> {repository}/{path}</h3>'.format(i=i, url=v['url'], hash=v['hash'][:6], repository=v['repository'], path=v['path'])
@@ -65,7 +66,7 @@ class Process(object):
                 html += '<code>{code}</code><hr>'.format(code=code)
             self._save_file(v['hash'], v['code'])
         html += '</table></body>'
-        return Notification(subject, to).notification(html)
+        return Notification(subject, to, cc).notification(html)
 
     @staticmethod
     def _save_file(sha, data):
@@ -75,7 +76,7 @@ class Process(object):
         :param data:
         :return:
         """
-        with open(os.path.join(Config().data_path, sha), 'w+') as f:
+        with open(os.path.join(Config().data_path, sha), 'w+', encoding='utf-8') as f:
             f.writelines(data)
         return True
 

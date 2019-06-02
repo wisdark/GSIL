@@ -55,7 +55,7 @@ try:
     else:
         tokens = [tokens]
 except Exception as e:
-    logger.critical('github -> tokens sections error')
+    logger.critical('github -> tokens sections error {e}'.format(e=traceback.format_exc()))
     exit(0)
 
 exclude_repository_rules = [
@@ -70,9 +70,14 @@ exclude_repository_rules = [
     # 爬虫
     r'(crawler)|(spider)|(scrapy)|(爬虫)',
     # 文档
-    r'((开发文档)|(api)|(doc))',
+    # doc可能存在误报
+    r'((开发文档)|(api))',
+    # 软件作者
+    r'(jquery)|(contact)|(readme)|(authors)',
+    # 软件配置
+    r'(surge)|(adblock)|(hosts)|(\.pac)|(ads)|(blacklist)|(package\.json)|(podspec\.json)|(tracking_servers)',
     # 无用东西
-    r'(linux_command_set)|(domains)|(jquery)|(sdk)|(linux)|(contact)|(readme)|(surge)|(adblock)|(hosts)|(\.pac)|(authors)|(\.html)|(\.apk)|(domain-list)|(easylist)|(urls)|(tracking_servers)|(ads)|(blacklist)|(easylist)|(http_analytic)',
+    r'(linux_command_set)|(domains)|(sdk)|(linux)|(\.html)|(\.apk)|(domain-list)|(easylist)|(urls)|(easylist)|(http_analytic)|(filtersregistry)|(PhyWall\.java)',
 ]
 
 exclude_codes_rules = [
@@ -208,7 +213,7 @@ class Config(object):
         if os.path.isdir(self.data_path) is not True:
             os.makedirs(self.data_path)
         self.run_data = os.path.join(home_path, 'run')
-        self.run_data_daily = os.path.join(home_path, 'run-{date}'.format(date=time.strftime('%m-%d')))
+        self.run_data_daily = os.path.join(home_path, 'run-{date}'.format(date=time.strftime('%y-%m-%d')))
 
     def hash_list(self):
         """

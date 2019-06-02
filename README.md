@@ -1,4 +1,4 @@
-# GSIL(GitHub Sensitive Information Leak)
+# GSIL(GitHub Sensitive Information Leakage)
 
 [中文文档](https://github.com/FeeiCN/GSIL/blob/master/README-zh.md)
 
@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 
 ## Configuration
 
-### gsil/config.gsil: Alarm mailbox and Guthub configuration
+### gsil/config.gsil(Rename by config.gsil.example): Alarm mailbox and Github configuration
 
 ```conf
 [mail]
@@ -32,6 +32,7 @@ to : feei@feei.cn
 
 [github]
 # Whether the scanned data will be cloned to the local area immediately
+# Clone to ~/.gsil/codes/ directory
 clone: false
 
 # Github Token, multiple tokens are separated by comma (,)
@@ -39,7 +40,7 @@ clone: false
 tokens : your_token
 ```
 
-### gsil/rules.gsil: scanning rules
+### gsil/rules.gsil(Rename by rules.gsil.example): scanning rules
 
 > Generally, The best rule is the characteristic code of the intranet(Example: mogujie's extranet is `mogujie.com`, intranet is `mogujie.org`. At this time, `mogujie.org` can be used as a rule)
 
@@ -49,22 +50,30 @@ tokens : your_token
 | --- | --- | --- | --- | --- |
 | keyword | key word | required | - | When multiple keywords are used, space segmentation is used(Example: `'username password'`), When you need a precise search, use double(Example: `"quotesele.me"`) |
 | ext | file suffix | optional | all suffixes | Multiple suffixes are separated by comma(Example: `java,php,python`) |
-| mode |  matching mode | optional | normal-match | `normal-match`(The line that contains the keyword is matched, and the line near the line is matched) / `only-match`(Only the lines that match the key words7) / `full-match`(Not recommended for use)(The search results show the entire file)|
+| mode |  matching mode | optional | normal-match | `normal-match`(The line that contains the keyword is matched, and the line near the line is matched) / `only-match`(Only the lines that match the key words) / `full-match`(Not recommended for use)(The search results show the entire file)|
 
 ```
 {
     # usually using the company name, used as the first parameter to open the scan(Example:`python gsil.py test`)
     "test": {
         # General use of product name
-        "mogujie.com": {
+        "mogujie": {
             # Internal domain name of the company
-            "\"mogujie.org\"": {},
+            "\"mogujie.org\"": {
+                # mode/ext options no need to configure by default
+                "mode": "normal-match",
+                "ext": "php,java,python,go,js,properties"
+            },
             # Company code's characteristic code
             "copyright meili inc": {},
             # Internal host domain name
             "yewu1.db.mogujie.host": {},
             # External mailbox
             "mail.mogujie.com": {}
+        },
+        "meilishuo": {
+            "meilishuo.org": {},
+            "meilishuo.io": {}
         }
     }
 }
@@ -74,6 +83,9 @@ tokens : your_token
 
 ```bash
 $ python gsil.py test
+
+# Verify tokens validity
+$ python gsil.py --verify-tokens
 ```
 
 ```bash
@@ -84,3 +96,7 @@ $ crontab -e
 # Send a statistical report at 11 p. m. every night
 0 23 * * * /usr/bin/python /var/app/gsil/gsil.py --report
 ```
+* Once the scan report will not repeat the report, the cache records in ~/.gsil/ directory *
+
+## Reference
+- [GSIL详细介绍](http://feei.cn/gsil)
