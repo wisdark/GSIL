@@ -9,14 +9,14 @@
 > Python3(Python2 is not tested)
 
 ```bash
-$ git clone https://github.com/FeeiCN/gsil.git
-$ cd gsil/
+$ git clone https://github.com/FeeiCN/GSIL.git
+$ cd GSIL/
 $ pip install -r requirements.txt
 ```
 
 ## Configuration
 
-### gsil/config.gsil(Rename by config.gsil.example): Alarm mailbox and Github configuration
+### GSIL/config.gsil(Copy config.gsil.cfg.example to config.gsil.cfg): Alarm mailbox and Github configuration
 
 ```conf
 [mail]
@@ -40,7 +40,7 @@ clone: false
 tokens : your_token
 ```
 
-### gsil/rules.gsil(Rename by rules.gsil.example): scanning rules
+### GSIL/rules.gsil(Copy rules.gsil.yaml.example to rules.gsil.yaml): scanning rules
 
 > Generally, The best rule is the characteristic code of the intranet(Example: mogujie's extranet is `mogujie.com`, intranet is `mogujie.org`. At this time, `mogujie.org` can be used as a rule)
 
@@ -92,11 +92,11 @@ $ python gsil.py --verify-tokens
 $ crontab -e
 
 # Run every hour
-0 * * * * /usr/bin/python /var/app/gsil/gsil.py test > /tmp/gsil
+0 * * * * /usr/bin/python /var/app/GSIL/gsil.py test > /tmp/gsil
 # Send a statistical report at 11 p. m. every night
-0 23 * * * /usr/bin/python /var/app/gsil/gsil.py --report
+0 23 * * * /usr/bin/python /var/app/GSIL/gsil.py --report
 ```
 * Once the scan report will not repeat the report, the cache records in ~/.gsil/ directory *
 
 ## Reference
-- [GSIL详细介绍](http://feei.cn/gsil)
+- [GSIL详细介绍](https://github.com/FeeiCN/GSIL/wiki)
